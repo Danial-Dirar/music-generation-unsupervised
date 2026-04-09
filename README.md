@@ -34,7 +34,8 @@ music-generation-unsupervised/
 ├── report/
 └── architecture_diagrams/
 
-
+```
+Download Official dataset: https://storage.googleapis.com/magentadata/datasets/maestro/v3.0.0/maestro-v3.0.0-midi.zip
 
 Implemented Components
 1. Preprocessing
