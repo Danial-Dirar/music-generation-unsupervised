@@ -1,0 +1,25 @@
+.venv ❯ PYTHONPATH=. ./.venv/bin/python -m src.generation.generate_transformer
+Using device: cuda
+/mnt/getsu/BRAC/CSE425/Neural network Project/music-generation-unsupervised/src/models/transformer.py:91: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.transformer = nn.TransformerEncoder(
+Loaded transformer checkpoint from epoch 16
+Sample 0 stats -> ref_mean: 0.045277, gen_min: 0.000000, gen_max: 1.000000, gen_mean: 0.065430
+Saved sample 0:
+  reference -> /mnt/getsu/BRAC/CSE425/Neural network Project/music-generation-unsupervised/outputs/generated_midis/transformer_generated/transformer_sample_000_reference.mid
+  generated -> /mnt/getsu/BRAC/CSE425/Neural network Project/music-generation-unsupervised/outputs/generated_midis/transformer_generated/transformer_sample_000_generated.mid
+Sample 1 stats -> ref_mean: 0.054688, gen_min: 0.000000, gen_max: 1.000000, gen_mean: 0.054688
+Saved sample 1:
+  reference -> /mnt/getsu/BRAC/CSE425/Neural network Project/music-generation-unsupervised/outputs/generated_midis/transformer_generated/transformer_sample_001_reference.mid
+  generated -> /mnt/getsu/BRAC/CSE425/Neural network Project/music-generation-unsupervised/outputs/generated_midis/transformer_generated/transformer_sample_001_generated.mid
+Sample 2 stats -> ref_mean: 0.043945, gen_min: 0.000000, gen_max: 1.000000, gen_mean: 0.085138
+Saved sample 2:
+  reference -> /mnt/getsu/BRAC/CSE425/Neural network Project/music-generation-unsupervised/outputs/generated_midis/transformer_generated/transformer_sample_002_reference.mid
+  generated -> /mnt/getsu/BRAC/CSE425/Neural network Project/music-generation-unsupervised/outputs/generated_midis/transformer_generated/transformer_sample_002_generated.mid
+Sample 3 stats -> ref_mean: 0.049272, gen_min: 0.000000, gen_max: 1.000000, gen_mean: 0.073065
+Saved sample 3:
+  reference -> /mnt/getsu/BRAC/CSE425/Neural network Project/music-generation-unsupervised/outputs/generated_midis/transformer_generated/transformer_sample_003_reference.mid
+  generated -> /mnt/getsu/BRAC/CSE425/Neural network Project/music-generation-unsupervised/outputs/generated_midis/transformer_generated/transformer_sample_003_generated.mid
+Sample 4 stats -> ref_mean: 0.087092, gen_min: 0.000000, gen_max: 1.000000, gen_mean: 0.031783
+Saved sample 4:
+  reference -> /mnt/getsu/BRAC/CSE425/Neural network Project/music-generation-unsupervised/outputs/generated_midis/transformer_generated/transformer_sample_004_reference.mid
+  generated -> /mnt/getsu/BRAC/CSE425/Neural network Project/music-generation-unsupervised/outputs/generated_midis/transformer_generated/transformer_sample_004_generated.mid

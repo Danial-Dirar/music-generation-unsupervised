@@ -1,0 +1,128 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\title{Unsupervised Neural Network for Multi-Genre Music Generation}
+
+\author{
+\IEEEauthorblockN{Your Name(s)}
+\IEEEauthorblockA{
+CSE425/EEE474 Neural Networks\\
+BRAC University
+}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This project investigates unsupervised neural approaches for symbolic music generation using MIDI data. We implement a full pipeline including MIDI preprocessing, piano-roll representation, sequence segmentation, LSTM autoencoder training, variational autoencoder (VAE) training, transformer-based sequence modeling, symbolic music generation, and quantitative evaluation. Experiments are conducted on the MAESTRO v3.0.0 MIDI dataset. Results show that the autoencoder can reconstruct basic note patterns but often produces repetitive rhythmic structures, while the VAE supports latent-space sampling for new sequence generation but still exhibits limited diversity. A transformer model achieves the strongest validation loss among the implemented models and produces more structured autoregressive outputs. In addition, a human listening survey protocol is prepared for preference-based evaluation and future reinforcement learning from human feedback (RLHF) style tuning.
+\end{abstract}
+
+\section{Introduction}
+Music generation is a challenging sequential modeling problem involving pitch, rhythm, duration, and temporal coherence. In this project, we study unsupervised neural methods for symbolic MIDI-based music generation. Instead of relying on expensive manual labeling, the models learn latent musical structure directly from symbolic note sequences. Our goal is to construct an end-to-end pipeline that covers preprocessing, unsupervised representation learning, neural sequence generation, and evaluation.
+
+\section{Problem Definition}
+Let a music sequence be represented as:
+\[
+X = \{x_1, x_2, \dots, x_T\}
+\]
+where each \(x_t\) corresponds to a symbolic representation of notes over time. The objective is to learn a generative model capable of producing realistic music sequences. In the autoencoder setting, the model learns a compressed latent representation and reconstructs the original sequence. In the VAE setting, the latent space is regularized for stochastic generation. In the transformer setting, the model learns an autoregressive distribution over future music frames.
+
+\section{Dataset}
+We use the MAESTRO v3.0.0 MIDI dataset for experiments. The metadata CSV provides train, validation, and test splits. MIDI files are converted into piano-roll representations and segmented into fixed-length windows of length 128. The pitch dimension is cropped to 88 piano keys, which matches the standard piano keyboard range. Although MAESTRO is a high-quality symbolic dataset, it mainly consists of classical piano performances, so it does not fully represent true multi-genre diversity.
+
+\section{Methodology}
+
+\subsection{Preprocessing}
+The preprocessing pipeline includes:
+\begin{itemize}
+    \item MIDI parsing
+    \item piano-roll conversion
+    \item pitch-range cropping to 88 piano keys
+    \item fixed-length sequence segmentation
+\end{itemize}
+
+\subsection{LSTM Autoencoder}
+We implement an LSTM-based autoencoder:
+\[
+z = f_{\phi}(X), \qquad \hat{X} = g_{\theta}(z)
+\]
+where the model is trained using reconstruction loss. The encoder compresses each piano-roll segment into a latent vector and the decoder reconstructs the input sequence from that latent representation.
+
+\subsection{Variational Autoencoder}
+We extend the autoencoder into a VAE:
+\[
+q_{\phi}(z|X)=\mathcal{N}(\mu(X), \sigma(X))
+\]
+with total loss:
+\[
+\mathcal{L}_{VAE} = \mathcal{L}_{recon} + \beta D_{KL}(q_{\phi}(z|X)\|p(z))
+\]
+This formulation allows latent-space sampling and stochastic generation of new symbolic music sequences.
+
+\subsection{Transformer Model}
+We also implement a transformer-based autoregressive model for next-step piano-roll prediction. Given a partially observed sequence, the transformer predicts the next time-step conditioned on previous frames:
+\[
+p(X)=\prod_{t=1}^{T} p(x_t \mid x_{<t})
+\]
+The model is trained using binary cross-entropy with logits over the future piano-roll frames. A causal mask is used to preserve autoregressive ordering.
+
+\subsection{Human Preference Evaluation and RLHF Framework}
+For the final stage of the project, we prepare a human listening survey protocol to evaluate generated samples according to:
+\begin{itemize}
+    \item musicality
+    \item coherence
+    \item rhythm quality
+    \item overall preference
+\end{itemize}
+A structured survey CSV template and an analysis script are included in the project. These components allow aggregation of participant ratings and support a future RLHF-style extension in which human preference scores can be used as reward signals for tuning the generator.
+
+\section{Experimental Setup}
+The experiments were performed using PyTorch and trained on GPU. We used piano-roll sequences of fixed length 128 with 88 pitch dimensions. Separate train, validation, and test sets were created from the MAESTRO metadata splits. Autoencoder and VAE models were trained using reconstruction-based objectives, while the transformer was trained autoregressively using next-step prediction. MIDI outputs were reconstructed or generated and exported for qualitative listening.
+
+\section{Evaluation Metrics}
+We evaluate generated and reconstructed outputs using:
+\begin{itemize}
+    \item Pitch Histogram Distance
+    \item Rhythm Diversity Score
+    \item Repetition Ratio
+\end{itemize}
+
+Pitch histogram distance measures how closely the pitch-class distribution of generated music matches a reference sequence. Rhythm diversity captures the ratio of unique note durations to the total number of notes. Repetition ratio measures how repetitive the rhythmic structure becomes in the output.
+
+\section{Results}
+
+\subsection{Autoencoder}
+The LSTM autoencoder baseline successfully reconstructs MIDI-like sequences, but the outputs often become repetitive and less rhythmically diverse than the original sequences. In our experiments, the autoencoder was able to learn a stable reconstruction pipeline, but the generated rhythms frequently collapsed toward a narrower set of durations. This makes the autoencoder a useful baseline, but not the strongest generator.
+
+\subsection{Variational Autoencoder}
+The VAE model is able to generate new symbolic samples through latent-space sampling. We successfully generated multiple MIDI outputs from latent vectors, demonstrating that the model supports unsupervised sampling beyond direct reconstruction. However, the generated samples remained conservative and showed limited diversity, suggesting that the latent space was only partially utilized.
+
+\subsection{Transformer}
+The transformer achieved the strongest predictive performance among the implemented models. During training, it reached a best validation loss of approximately 0.0345 and a validation perplexity of approximately 1.035. The transformer also produced autoregressive generated MIDI samples conditioned on short seed segments. Compared to the AE and VAE outputs, the transformer outputs were more structured and more consistent with temporal continuity.
+
+\subsection{Baseline Comparison}
+We include random-note and first-order Markov baselines for comparison. These baselines provide a lower-bound reference for musical coherence and help highlight the benefits of neural sequence models. The random baseline preserves only coarse activation statistics, while the Markov baseline models local note transitions without deeper temporal abstraction.
+
+\subsection{Human Preference Evaluation Protocol}
+A human listening survey was prepared to compare AE, VAE, and Transformer outputs. Each participant rates generated samples on musicality, coherence, rhythm, and overall quality on a 1--5 scale. The survey analysis pipeline computes mean scores per model and enables before-versus-after comparison for preference-based evaluation. At the time of this report, the survey protocol and scoring framework are ready, while final listener responses are treated as the next stage of evaluation.
+
+\section{Discussion}
+The experiments reveal the difficulty of balancing sparsity and diversity in symbolic music generation. Autoencoders may produce overly sparse or overly repetitive outputs depending on loss weighting and thresholding. VAEs add a latent sampling mechanism but may still suffer from limited latent utilization or posterior-collapse-like behavior. The transformer model produced the most promising structured outputs, though it also requires more computation and training time. Overall, the project demonstrates that symbolic music generation quality depends not only on the model architecture, but also on preprocessing, loss design, thresholding, and evaluation strategy.
+
+\section{Limitations}
+The experiments are based only on MAESTRO, which is largely classical piano and not fully multi-genre. Full multi-genre experiments would require additional datasets such as Lakh MIDI. Furthermore, the human preference component has been designed and implemented at the survey/protocol level, but full preference-based fine-tuning depends on collecting sufficient listener responses.
+
+\section{Conclusion}
+This project demonstrates a full end-to-end symbolic music generation pipeline, including preprocessing, training, generation, and evaluation. We implemented and tested three major modeling approaches: an LSTM autoencoder, a VAE, and a transformer. The autoencoder provided a working reconstruction baseline, the VAE enabled latent-space sampling, and the transformer achieved the best sequence modeling performance. In addition, we prepared a human preference evaluation pipeline that supports future RLHF-style refinement. Future work includes richer multi-genre training, stronger latent regularization, and closed-loop human preference tuning.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

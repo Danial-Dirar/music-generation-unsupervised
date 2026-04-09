@@ -1,0 +1,11 @@
+numpy
+pandas
+matplotlib
+pretty_midi
+mido
+scikit-learn
+torch
+tqdm
+jupyter
+miditoolkit
+seaborn
