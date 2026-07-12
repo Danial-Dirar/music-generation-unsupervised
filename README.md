@@ -104,4 +104,4 @@ Future Work
 Add a true multi-genre dataset such as Lakh MIDI
 Improve VAE latent utilization
 Add Transformer-based generation
-Add human listening evaluation
+Add human listening evaluation.
